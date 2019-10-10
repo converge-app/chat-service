@@ -15,7 +15,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+
 
 namespace Application.Controllers
 {
@@ -35,16 +35,44 @@ namespace Application.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostEvent([FromBody] EventCreationDto eventDto)
+        public async Task<IActionResult> PostMessage([FromBody] MessageCreationDto MessageDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new { message = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
 
-            var createEvent = _mapper.Map<Event>(eventDto);
+            var createMessage = _mapper.Map<Message>(MessageDto);
             try
             {
-                var createdEvent = await _Chatservice.Create(createEvent);
-                return Ok(createdEvent);
+                var createdMessage = await _Chatservice.AddContact(createMessage);
+                return Ok(createdMessage);
+            }
+            catch (UserNotFound)
+            {
+                return NotFound(new MessageObj("User not found"));
+            }
+            catch (EnvironmentNotSet)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new MessageObj(e.Message));
+            }
+        }
+
+      
+        [HttpPost("contacts")]
+        [AllowAnonymous]        
+        public async Task<IActionResult> AddContact([FromBody] AddContactDTO AddContactDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { message = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+
+            var createMessage = _mapper.Map<Message>(AddContactDto);
+            try
+            {
+                var createdMessage = await _Chatservice.AddContact(createMessage);
+                return Ok(createdMessage);
             }
             catch (ProjectNotFound)
             {
@@ -65,14 +93,14 @@ namespace Application.Controllers
         public async Task<IActionResult> GetAll()
         {
             var Chats = await _ChatRepository.Get();
-            var ChatDtos = _mapper.Map<IList<EventDto>>(Chats);
+            var ChatDtos = _mapper.Map<IList<MessageDto>>(Chats);
             return Ok(ChatDtos);
-        }
+        }     
 
-        [HttpGet("project/{projectId}")]
-        public async Task<IActionResult> GetByProjectId([FromRoute] string projectId)
+          [HttpGet("project/{projectId}")]
+        public async Task<IActionResult> GetByContactId([FromRoute] string projectId)
         {
-            var events = (await _ChatRepository.GetByProjectId(projectId)).ToList();
+            var events = (await _ChatRepository.GetByContactId(projectId)).ToList();
             return Ok(events);
         }
 
@@ -81,7 +109,7 @@ namespace Application.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var Chat = await _ChatRepository.GetById(id);
-            var ChatDto = _mapper.Map<EventDto>(Chat);
+            var ChatDto = _mapper.Map<MessageDto>(Chat);
             return Ok(ChatDto);
         }
     }

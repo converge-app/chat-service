@@ -7,9 +7,11 @@ namespace Application.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<Event, EventDto>();
-            CreateMap<EventDto, Event>();
-            CreateMap<EventCreationDto, Event>();
+            CreateMap<Message, MessageDto>();
+            CreateMap<MessageDto, Message>();
+            CreateMap<MessageCreationDto, Message>();
+            CreateMap<AddContactDTO, Message>();
+            CreateMap<Message, AddContactDTO>();
         }
     }
 }

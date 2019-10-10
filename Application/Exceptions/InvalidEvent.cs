@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Application.Exceptions
 {
     [Serializable]
-    public class InvalidEvent : Exception
+    public class InvalidMessage : Exception
     {
         //
         // For guidelines regarding the creation of new exception types, see
@@ -13,16 +13,16 @@ namespace Application.Exceptions
         //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
         //
 
-        public InvalidEvent()
+        public InvalidMessage()
         { }
 
-        public InvalidEvent(string message) : base(message)
+        public InvalidMessage(string message) : base(message)
         { }
 
-        public InvalidEvent(string message, Exception inner) : base(message, inner)
+        public InvalidMessage(string message, Exception inner) : base(message, inner)
         { }
 
-        protected InvalidEvent(
+        protected InvalidMessage(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         { }

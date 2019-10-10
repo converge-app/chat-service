@@ -7,7 +7,7 @@ namespace Application.Database
 {
     public interface IDatabaseContext
     {
-        IMongoCollection<Event> Chats { get; }
+        IMongoCollection<Message> Chats { get; }
 
         bool IsConnectionOpen();
     }
@@ -23,7 +23,7 @@ namespace Application.Database
             _database = client.GetDatabase(settings.DatabaseName);
         }
 
-        public IMongoCollection<Event> Chats => _database.GetCollection<Event>("Chats");
+        public IMongoCollection<Message> Chats => _database.GetCollection<Message>("Chats");
 
         public bool IsConnectionOpen()
         {
