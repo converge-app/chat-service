@@ -68,10 +68,10 @@ namespace Application
 
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             services.AddTokenValidation(appSettings.Secret);
-            services.AddScoped<ICollaborationRepository, CollaborationRepository>();
-            services.AddScoped<ICollaborationService, CollaborationService>();
+            services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IChatservice, Chatservice>();
 
-            services.AddApiDocumentation("Collaborations");
+            services.AddApiDocumentation("Chats");
 
             services.AddHealthChecks();
         }
@@ -86,7 +86,7 @@ namespace Application
             app.UseRequestMiddleware();
 
             app.UseAuthentication();
-            app.UseApiDocumentation("Collaborations");
+            app.UseApiDocumentation("Chats");
 
             app.UseMvc();
         }

@@ -7,7 +7,7 @@ using MongoDB.Driver;
 
 namespace Application.Repositories
 {
-    public interface ICollaborationRepository
+    public interface IChatRepository
     {
         Task<List<Event>> Get();
         Task<Event> GetById(string id);
@@ -15,35 +15,35 @@ namespace Application.Repositories
         Task<IOrderedEnumerable<Event>> GetByProjectId(string projectId);
     }
 
-    public class CollaborationRepository : ICollaborationRepository
+    public class ChatRepository : IChatRepository
     {
-        private readonly IMongoCollection<Event> _collaborations;
+        private readonly IMongoCollection<Event> _Chats;
 
-        public CollaborationRepository(IDatabaseContext dbContext)
+        public ChatRepository(IDatabaseContext dbContext)
         {
             if (dbContext.IsConnectionOpen())
-                _collaborations = dbContext.Collaborations;
+                _Chats = dbContext.Chats;
         }
 
         public async Task<List<Event>> Get()
         {
-            return await (await _collaborations.FindAsync(collaboration => true)).ToListAsync();
+            return await (await _Chats.FindAsync(Chat => true)).ToListAsync();
         }
 
         public async Task<Event> GetById(string id)
         {
-            return await (await _collaborations.FindAsync(collaboration => collaboration.Id == id)).FirstOrDefaultAsync();
+            return await (await _Chats.FindAsync(Chat => Chat.Id == id)).FirstOrDefaultAsync();
         }
 
         public async Task<Event> Create(Event @event)
         {
-            await _collaborations.InsertOneAsync(@event);
+            await _Chats.InsertOneAsync(@event);
             return @event;
         }
 
         public async Task<IOrderedEnumerable<Event>> GetByProjectId(string projectId)
         {
-            var events = await (await _collaborations.FindAsync(@event => @event.ProjectId == projectId)).ToListAsync();
+            var events = await (await _Chats.FindAsync(@event => @event.ProjectId == projectId)).ToListAsync();
             return events.OrderByDescending(e => e.Timestamp);
         }
     }

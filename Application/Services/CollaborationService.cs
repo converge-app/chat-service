@@ -10,25 +10,25 @@ using Newtonsoft.Json;
 
 namespace Application.Services
 {
-    public interface ICollaborationService
+    public interface IChatservice
     {
         Task<Event> Create(Event createEvent);
     }
 
-    public class CollaborationService : ICollaborationService
+    public class Chatservice : IChatservice
     {
-        private readonly ICollaborationRepository _collaborationRepository;
+        private readonly IChatRepository _ChatRepository;
         private readonly IClient _client;
 
-        public CollaborationService(ICollaborationRepository collaborationRepository, IClient client)
+        public Chatservice(IChatRepository ChatRepository, IClient client)
         {
-            _collaborationRepository = collaborationRepository;
+            _ChatRepository = ChatRepository;
             _client = client;
         }
 
         public async Task<Event> Create(Event createEvent)
         {
-            if(JsonConvert.DeserializeObject(createEvent.Content) == null)
+            if (JsonConvert.DeserializeObject(createEvent.Content) == null)
                 throw new InvalidEvent("Content was not parseable");
 
             if (await _client.GetProjectAsync(createEvent.ProjectId) == null)
@@ -36,7 +36,7 @@ namespace Application.Services
 
             createEvent.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            return await _collaborationRepository.Create(createEvent);
+            return await _ChatRepository.Create(createEvent);
         }
     }
 }

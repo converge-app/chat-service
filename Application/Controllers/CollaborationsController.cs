@@ -21,16 +21,16 @@ namespace Application.Controllers
 {
     [Route("api/[controller]")]
     [Authorize]
-    public class CollaborationsController : ControllerBase
+    public class ChatsController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ICollaborationRepository _collaborationRepository;
-        private readonly ICollaborationService _collaborationService;
+        private readonly IChatRepository _ChatRepository;
+        private readonly IChatservice _Chatservice;
 
-        public CollaborationsController(ICollaborationService collaborationService, ICollaborationRepository collaborationRepository, IMapper mapper)
+        public ChatsController(IChatservice Chatservice, IChatRepository ChatRepository, IMapper mapper)
         {
-            _collaborationService = collaborationService;
-            _collaborationRepository = collaborationRepository;
+            _Chatservice = Chatservice;
+            _ChatRepository = ChatRepository;
             _mapper = mapper;
         }
 
@@ -43,7 +43,7 @@ namespace Application.Controllers
             var createEvent = _mapper.Map<Event>(eventDto);
             try
             {
-                var createdEvent = await _collaborationService.Create(createEvent);
+                var createdEvent = await _Chatservice.Create(createEvent);
                 return Ok(createdEvent);
             }
             catch (ProjectNotFound)
@@ -64,15 +64,15 @@ namespace Application.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
-            var collaborations = await _collaborationRepository.Get();
-            var collaborationDtos = _mapper.Map<IList<EventDto>>(collaborations);
-            return Ok(collaborationDtos);
+            var Chats = await _ChatRepository.Get();
+            var ChatDtos = _mapper.Map<IList<EventDto>>(Chats);
+            return Ok(ChatDtos);
         }
 
         [HttpGet("project/{projectId}")]
         public async Task<IActionResult> GetByProjectId([FromRoute] string projectId)
         {
-            var events = (await _collaborationRepository.GetByProjectId(projectId)).ToList();
+            var events = (await _ChatRepository.GetByProjectId(projectId)).ToList();
             return Ok(events);
         }
 
@@ -80,9 +80,9 @@ namespace Application.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetById(string id)
         {
-            var collaboration = await _collaborationRepository.GetById(id);
-            var collaborationDto = _mapper.Map<EventDto>(collaboration);
-            return Ok(collaborationDto);
+            var Chat = await _ChatRepository.GetById(id);
+            var ChatDto = _mapper.Map<EventDto>(Chat);
+            return Ok(ChatDto);
         }
     }
 }

@@ -1,42 +1,42 @@
-apiVersion: apps/v1 
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.web.name }}
+  name: { { .Values.web.name } }
   labels:
-    app: {{ .Values.web.name }}
+    app: { { .Values.web.name } }
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Values.web.name }}
+      app: { { .Values.web.name } }
   template:
     metadata:
       labels:
-        app: {{ .Values.web.name }}
+        app: { { .Values.web.name } }
     spec:
       imagePullSecrets:
         - name: gitlab-registry
       containers:
-        - name: {{ .Values.web.name }}
-          image: {{ .Values.web.image }}
+        - name: { { .Values.web.name } }
+          image: { { .Values.web.image } }
           imagePullPolicy: Always
           env:
             - name: ELASTICSEARCH_URI
               value: jaeger-elasticsearch-client:9200
             - name: CollectionName
-              value: "Collaborations"
+              value: "Chats"
             - name: ConnectionString
               value: "mongodb://{{ .Values.web.mongodb.serviceName }}:{{ .Values.web.mongodb.port }}"
             - name: DatabaseName
-              value: {{ .Values.mongodb.mongodbDatabase }}
+              value: { { .Values.mongodb.mongodbDatabase } }
             - name: MONGO_SERVICE_PORT
               value: "{{ .Values.web.mongodb.port }}"
             - name: MONGO_SERVICE_NAME
-              value: {{ .Values.web.mongodb.serviceName }}
+              value: { { .Values.web.mongodb.serviceName } }
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: {{ .Values.mongodb.mongodbUsername }}
+              value: { { .Values.mongodb.mongodbUsername } }
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: {{ .Values.mongodb.mongodbPassword }}
+              value: { { .Values.mongodb.mongodbPassword } }
             - name: JAEGER_AGENT_HOST
               value: "jaeger-agent"
             - name: JAEGER_AGENT_PORT
@@ -46,7 +46,7 @@ spec:
             - name: PROJECTS_SERVICE_HTTP
               value: projects-service-master
           ports:
-            - containerPort: {{ .Values.web.port }}
+            - containerPort: { { .Values.web.port } }
           resources:
             limits:
               memory: "256Mi"
@@ -70,4 +70,3 @@ spec:
               scheme: HTTP
             periodSeconds: 10
             successThreshold: 1
- 
