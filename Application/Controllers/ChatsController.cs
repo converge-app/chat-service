@@ -43,7 +43,7 @@ namespace Application.Controllers
             var createMessage = _mapper.Map<Message>(MessageDto);
             try
             {
-                var createdMessage = await _Chatservice.AddContact(createMessage);
+                var createdMessage = await _Chatservice.PostMessage(createMessage);
                 return Ok(createdMessage);
             }
             catch (UserNotFound)
@@ -60,9 +60,9 @@ namespace Application.Controllers
             }
         }
 
-      
+
         [HttpPost("contacts")]
-        [AllowAnonymous]        
+        [AllowAnonymous]
         public async Task<IActionResult> AddContact([FromBody] AddContactDTO AddContactDto)
         {
             if (!ModelState.IsValid)
@@ -95,9 +95,9 @@ namespace Application.Controllers
             var Chats = await _ChatRepository.Get();
             var ChatDtos = _mapper.Map<IList<MessageDto>>(Chats);
             return Ok(ChatDtos);
-        }     
+        }
 
-          [HttpGet("project/{projectId}")]
+        [HttpGet("project/{projectId}")]
         public async Task<IActionResult> GetByContactId([FromRoute] string projectId)
         {
             var events = (await _ChatRepository.GetByContactId(projectId)).ToList();

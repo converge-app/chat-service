@@ -17,6 +17,7 @@ namespace Application.Services
     public interface IChatservice
     {
         Task<Message> AddContact(Message createMessage);
+        Task<Message> PostMessage(Message sendMessage);
     }
 
     public class Chatservice : IChatservice
@@ -30,9 +31,23 @@ namespace Application.Services
             _client = client;
         }
 
-        public async Task<Message> AddContact(Message createMessage)
+        public async Task<Message> PostMessage(Message sendMessage)
         {
 
+            if (JsonConvert.DeserializeObject(sendMessage.message) == null)
+                throw new InvalidMessage("Content was not parseable");
+
+            if (await _client.GetProjectAsync(sendMessage.ContactId) == null)
+                throw new ProjectNotFound();
+
+            sendMessage.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            return await _ChatRepository.Create(sendMessage);
+
+        }
+
+        public async Task<Message> AddContact(Message createMessage)
+        {
 
             var hash = "";
             hash = HashUsers(createMessage.SenderId, createMessage.RecieverId);
@@ -43,12 +58,12 @@ namespace Application.Services
         }
 
         public async Task<List<Message>> GetChat(string senderId, string receiverId)
-         {
-             if (senderId == receiverId) 
+        {
+            if (senderId == receiverId)
                 throw new ArgumentException("Something went wrong");
 
             var hash = HashUsers(senderId, receiverId);
-            
+
             var users = await _ChatRepository.GetByContactId(hash);
             return users.ToList();
         }
