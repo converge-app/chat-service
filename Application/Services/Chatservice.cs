@@ -33,26 +33,26 @@ namespace Application.Services
 
         public async Task<Message> PostMessage(Message sendMessage)
         {
+            
 
-            if (JsonConvert.DeserializeObject(sendMessage.message) == null)
-                throw new InvalidMessage("Content was not parseable");
+            Message convo = new Message
+            {
+                SenderId = sendMessage.SenderId,
+                Content = sendMessage.Content,
+                ReceiverId = sendMessage.ReceiverId
+            };
 
-            if (await _client.GetProjectAsync(sendMessage.ContactId) == null)
-                throw new ProjectNotFound();
+            convo.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            sendMessage.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-            return await _ChatRepository.Create(sendMessage);
+            return await _ChatRepository.Create(convo);
 
         }
 
         public async Task<Message> AddContact(Message createMessage)
         {
-
-            var hash = "";
-            hash = HashUsers(createMessage.SenderId, createMessage.RecieverId);
-
+            createMessage.ContactId = HashUsers(createMessage.SenderId, createMessage.ReceiverId);
             createMessage.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            createMessage.Content = "Contact was added";
 
             return await _ChatRepository.Create(createMessage);
         }
@@ -76,7 +76,7 @@ namespace Application.Services
                 var users = new List<string>();
                 users.Add(senderId);
                 users.Add(receiverId);
-                users.Sort();
+                users.Sort(); 
                 var result = "";
                 var resultSb = new StringBuilder();
                 foreach (var user in users)

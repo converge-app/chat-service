@@ -1,7 +1,7 @@
 web:
   port: 80
   mongodb:
-    serviceName: "Chat-service-master-mongodb"
+    serviceName: "chat-service-master-mongodb"
     port: "27017"
 
 mongodb:

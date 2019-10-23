@@ -25,11 +25,11 @@ namespace Application.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _ChatRepository;
-        private readonly IChatservice _Chatservice;
+        private readonly IChatservice _chatService;
 
         public ChatsController(IChatservice Chatservice, IChatRepository ChatRepository, IMapper mapper)
         {
-            _Chatservice = Chatservice;
+            _chatService = Chatservice;
             _ChatRepository = ChatRepository;
             _mapper = mapper;
         }
@@ -43,7 +43,7 @@ namespace Application.Controllers
             var createMessage = _mapper.Map<Message>(MessageDto);
             try
             {
-                var createdMessage = await _Chatservice.PostMessage(createMessage);
+                var createdMessage = await _chatService.PostMessage(createMessage);
                 return Ok(createdMessage);
             }
             catch (UserNotFound)
@@ -62,7 +62,6 @@ namespace Application.Controllers
 
 
         [HttpPost("contacts")]
-        [AllowAnonymous]
         public async Task<IActionResult> AddContact([FromBody] AddContactDTO AddContactDto)
         {
             if (!ModelState.IsValid)
@@ -71,7 +70,7 @@ namespace Application.Controllers
             var createMessage = _mapper.Map<Message>(AddContactDto);
             try
             {
-                var createdMessage = await _Chatservice.AddContact(createMessage);
+                var createdMessage = await _chatService.AddContact(createMessage);
                 return Ok(createdMessage);
             }
             catch (ProjectNotFound)
@@ -89,7 +88,6 @@ namespace Application.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var Chats = await _ChatRepository.Get();
@@ -97,20 +95,26 @@ namespace Application.Controllers
             return Ok(ChatDtos);
         }
 
-        [HttpGet("project/{projectId}")]
-        public async Task<IActionResult> GetByContactId([FromRoute] string projectId)
+        [HttpGet("contacts/{contactId}")]
+        public async Task<IActionResult> GetByContactId([FromRoute] string contactId)
         {
-            var events = (await _ChatRepository.GetByContactId(projectId)).ToList();
-            return Ok(events);
+            var messages = (await _ChatRepository.GetByContactId(contactId)).ToList();
+            return Ok(messages);
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetById(string id)
         {
             var Chat = await _ChatRepository.GetById(id);
             var ChatDto = _mapper.Map<MessageDto>(Chat);
             return Ok(ChatDto);
+        }
+
+        [HttpGet("contacts/user/{userId}")]
+        public async Task<IActionResult> GetContactsForUserId([FromRoute] string userId)
+        {
+            var messages = await _ChatRepository.GetContactsForUserId(userId);
+            return Ok(messages);
         }
     }
 }

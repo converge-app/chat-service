@@ -8,7 +8,7 @@ namespace Application.Models.DataTransferObjects
         [Required]
         public string SenderId { get; set; }
         [Required]
-        public string RecieverId { get; set; }
+        public string ReceiverId { get; set; }
 
     }
 }
