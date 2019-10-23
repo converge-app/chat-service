@@ -12,8 +12,10 @@ namespace Application.Repositories
         Task<List<Message>> Get();
         Task<Message> GetById(string id);
         Task<Message> Create(Message @Message);
-          Task<IOrderedEnumerable<Message>> GetByContactId(string contactId);
+        Task<IOrderedEnumerable<Message>> GetByContactId(string contactId);
         Task<IEnumerable<Message>> GetContactsForUserId(string userId);
+        Task<List<Message>> GetAllContacts();
+
     }
 
     public class ChatRepository : IChatRepository
@@ -42,10 +44,10 @@ namespace Application.Repositories
             return @Message;
         }
 
-             public async Task<IOrderedEnumerable<Message>> GetByContactId(string contactId)
+        public async Task<IOrderedEnumerable<Message>> GetByContactId(string contactId)
         {
             var chats = await (await _chats.FindAsync(chat => chat.ContactId == contactId)).ToListAsync();
-            return chats.OrderByDescending(e => e.Timestamp);
+            return chats.OrderBy(e => e.Timestamp);
         }
 
         public async Task<IEnumerable<Message>> GetContactsForUserId(string userId)
@@ -54,5 +56,13 @@ namespace Application.Repositories
             var contacts = messages.GroupBy(message => message.ContactId).Select(message => message.FirstOrDefault()).ToList();
             return contacts;
         }
+
+        public async Task<List<Message>> GetAllContacts()
+        {
+            var messages = await (await _chats.FindAsync(message => true)).ToListAsync();
+            var contacts = messages.GroupBy(message => message.ContactId).Select(message => message.FirstOrDefault()).ToList();
+            return contacts;
+        }
+
     }
 }

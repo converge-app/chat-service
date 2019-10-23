@@ -14,18 +14,18 @@ using Newtonsoft.Json;
 /*sdjkfskjf */
 namespace Application.Services
 {
-    public interface IChatservice
+    public interface IChatService
     {
         Task<Message> AddContact(Message createMessage);
         Task<Message> PostMessage(Message sendMessage);
     }
 
-    public class Chatservice : IChatservice
+    public class ChatService : IChatService
     {
         private readonly IChatRepository _ChatRepository;
         private readonly IClient _client;
 
-        public Chatservice(IChatRepository ChatRepository, IClient client)
+        public ChatService(IChatRepository ChatRepository, IClient client)
         {
             _ChatRepository = ChatRepository;
             _client = client;
@@ -33,24 +33,29 @@ namespace Application.Services
 
         public async Task<Message> PostMessage(Message sendMessage)
         {
-            
 
-            Message convo = new Message
+            Message message = new Message
             {
                 SenderId = sendMessage.SenderId,
                 Content = sendMessage.Content,
                 ReceiverId = sendMessage.ReceiverId
             };
+            message.ContactId = HashUsers(message.SenderId, message.ReceiverId);
+            message.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            convo.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
-            return await _ChatRepository.Create(convo);
+            return await _ChatRepository.Create(message);
 
         }
 
         public async Task<Message> AddContact(Message createMessage)
         {
             createMessage.ContactId = HashUsers(createMessage.SenderId, createMessage.ReceiverId);
+            var contact = await _ChatRepository.GetByContactId(createMessage.ContactId);
+            if (contact.Count() != 0)
+            {
+                throw new InvalidContact("Contact already added.");
+            }
+
             createMessage.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             createMessage.Content = "Contact was added";
 
@@ -76,7 +81,7 @@ namespace Application.Services
                 var users = new List<string>();
                 users.Add(senderId);
                 users.Add(receiverId);
-                users.Sort(); 
+                users.Sort();
                 var result = "";
                 var resultSb = new StringBuilder();
                 foreach (var user in users)

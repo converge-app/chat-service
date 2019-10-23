@@ -56,7 +56,7 @@ namespace Application
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             services.AddTokenValidation(appSettings.Secret);
             services.AddScoped<IChatRepository, ChatRepository>();
-            services.AddScoped<IChatservice, Chatservice>();
+            services.AddScoped<IChatService, ChatService>();
             services.AddTracing(options =>
             {
                 options.JaegerAgentHost = Environment.GetEnvironmentVariable("JAEGER_AGENT_HOST");

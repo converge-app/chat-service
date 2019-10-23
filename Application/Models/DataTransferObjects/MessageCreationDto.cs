@@ -4,13 +4,13 @@ namespace Application.Models.DataTransferObjects
 {
     public class MessageCreationDto
     {
-    
+
         [Required]
         public string SenderId { get; set; }
         [Required]
-        public string RecieverId { get; set; }
+        public string ReceiverId { get; set; }
         [Required]
-        public string message { get; set; }
-       
+        public string Content { get; set; }
+
     }
 }

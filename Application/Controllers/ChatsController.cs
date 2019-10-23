@@ -25,9 +25,9 @@ namespace Application.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _ChatRepository;
-        private readonly IChatservice _chatService;
+        private readonly IChatService _chatService;
 
-        public ChatsController(IChatservice Chatservice, IChatRepository ChatRepository, IMapper mapper)
+        public ChatsController(IChatService Chatservice, IChatRepository ChatRepository, IMapper mapper)
         {
             _chatService = Chatservice;
             _ChatRepository = ChatRepository;
@@ -87,7 +87,7 @@ namespace Application.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<IActionResult> GetAll()
         {
             var Chats = await _ChatRepository.Get();
@@ -95,8 +95,9 @@ namespace Application.Controllers
             return Ok(ChatDtos);
         }
 
+
         [HttpGet("contacts/{contactId}")]
-        public async Task<IActionResult> GetByContactId([FromRoute] string contactId)
+        public async Task<IActionResult> GetMessagesByContactId([FromRoute] string contactId)
         {
             var messages = (await _ChatRepository.GetByContactId(contactId)).ToList();
             return Ok(messages);
@@ -110,11 +111,20 @@ namespace Application.Controllers
             return Ok(ChatDto);
         }
 
+        [HttpGet("contacts")]
+        public async Task<IActionResult> GetAllContacts()
+        {
+            var contacts = await _ChatRepository.GetAllContacts();
+            return Ok(contacts);
+        }
+
         [HttpGet("contacts/user/{userId}")]
         public async Task<IActionResult> GetContactsForUserId([FromRoute] string userId)
         {
             var messages = await _ChatRepository.GetContactsForUserId(userId);
             return Ok(messages);
         }
+
+
     }
 }
