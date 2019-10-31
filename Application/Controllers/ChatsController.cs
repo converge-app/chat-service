@@ -2,20 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Exceptions;
-using Application.Helpers;
 using Application.Models.DataTransferObjects;
 using Application.Models.Entities;
 using Application.Repositories;
 using Application.Services;
-using Application.Utility;
 using Application.Utility.Exception;
 using Application.Utility.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
 
 namespace Application.Controllers
 {
@@ -60,7 +55,6 @@ namespace Application.Controllers
             }
         }
 
-
         [HttpPost("contacts")]
         public async Task<IActionResult> AddContact([FromBody] AddContactDTO AddContactDto)
         {
@@ -95,7 +89,6 @@ namespace Application.Controllers
             return Ok(ChatDtos);
         }
 
-
         [HttpGet("contacts/{contactId}")]
         public async Task<IActionResult> GetMessagesByContactId([FromRoute] string contactId)
         {
@@ -124,7 +117,6 @@ namespace Application.Controllers
             var messages = await _ChatRepository.GetContactsForUserId(userId);
             return Ok(messages);
         }
-
 
     }
 }

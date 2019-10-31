@@ -6,9 +6,9 @@ namespace Application.Models.DataTransferObjects
     {
         public string Id { get; set; }
         public string SenderId { get; set; }
-        public string RecieverId { get; set; }
+        public string ReceiverId { get; set; }
         public string ContactId { get; set; }
-        public string message { get; set; }
+        public string Content { get; set; }
         public long Timestamp { get; set; }
     }
 }
