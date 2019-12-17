@@ -1,0 +1,7 @@
+@startuml
+class MessageCreationDto {
+    + SenderId : string <<get>> <<set>>
+    + ReceiverId : string <<get>> <<set>>
+    + Content : string <<get>> <<set>>
+}
+@enduml

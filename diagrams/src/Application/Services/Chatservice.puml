@@ -1,0 +1,16 @@
+@startuml
+interface IChatService {
+    AddContact(createMessage:Message) : Task<Message>
+    PostMessage(sendMessage:Message) : Task<Message>
+}
+class ChatService {
+    - <<readonly>> _ChatRepository : IChatRepository
+    - <<readonly>> _client : IClient
+    + ChatService(ChatRepository:IChatRepository, client:IClient)
+    + <<async>> PostMessage(sendMessage:Message) : Task<Message>
+    + <<async>> AddContact(createMessage:Message) : Task<Message>
+    + <<async>> GetChat(senderId:string, receiverId:string) : Task<List<Message>>
+    - {static} HashUsers(senderId:string, receiverId:string) : string
+}
+IChatService <|-- ChatService
+@enduml

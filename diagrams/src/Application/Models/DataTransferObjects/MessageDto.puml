@@ -1,0 +1,10 @@
+@startuml
+class MessageDto {
+    + Id : string <<get>> <<set>>
+    + SenderId : string <<get>> <<set>>
+    + ReceiverId : string <<get>> <<set>>
+    + ContactId : string <<get>> <<set>>
+    + Content : string <<get>> <<set>>
+    + Timestamp : long <<get>> <<set>>
+}
+@enduml

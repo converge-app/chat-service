@@ -1,0 +1,16 @@
+@startuml
+class ChatsController {
+    - <<readonly>> _mapper : IMapper
+    - <<readonly>> _ChatRepository : IChatRepository
+    - <<readonly>> _chatService : IChatService
+    + ChatsController(Chatservice:IChatService, ChatRepository:IChatRepository, mapper:IMapper)
+    + <<async>> PostMessage(MessageDto:MessageCreationDto) : Task<IActionResult>
+    + <<async>> AddContact(AddContactDto:AddContactDTO) : Task<IActionResult>
+    + <<async>> GetAll() : Task<IActionResult>
+    + <<async>> GetMessagesByContactId(contactId:string) : Task<IActionResult>
+    + <<async>> GetById(id:string) : Task<IActionResult>
+    + <<async>> GetAllContacts() : Task<IActionResult>
+    + <<async>> GetContactsForUserId(userId:string) : Task<IActionResult>
+}
+ControllerBase <|-- ChatsController
+@enduml

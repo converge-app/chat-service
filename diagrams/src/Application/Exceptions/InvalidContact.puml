@@ -1,0 +1,9 @@
+@startuml
+class InvalidContact {
+    + InvalidContact()
+    + InvalidContact(message:string)
+    + InvalidContact(message:string, inner:Exception)
+    # InvalidContact(info:SerializationInfo, context:StreamingContext)
+}
+Exception <|-- InvalidContact
+@enduml

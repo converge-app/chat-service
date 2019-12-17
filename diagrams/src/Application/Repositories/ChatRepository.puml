@@ -1,0 +1,21 @@
+@startuml
+interface IChatRepository {
+    Get() : Task<List<Message>>
+    GetById(id:string) : Task<Message>
+    Create(@Message:Message) : Task<Message>
+    GetByContactId(contactId:string) : Task<IOrderedEnumerable<Message>>
+    GetContactsForUserId(userId:string) : Task<IEnumerable<Message>>
+    GetAllContacts() : Task<List<Message>>
+}
+class ChatRepository {
+    - <<readonly>> _chats : IMongoCollection<Message>
+    + ChatRepository(dbContext:IDatabaseContext)
+    + <<async>> Get() : Task<List<Message>>
+    + <<async>> GetById(id:string) : Task<Message>
+    + <<async>> Create(@Message:Message) : Task<Message>
+    + <<async>> GetByContactId(contactId:string) : Task<IOrderedEnumerable<Message>>
+    + <<async>> GetContactsForUserId(userId:string) : Task<IEnumerable<Message>>
+    + <<async>> GetAllContacts() : Task<List<Message>>
+}
+IChatRepository <|-- ChatRepository
+@enduml
